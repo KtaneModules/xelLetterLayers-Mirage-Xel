@@ -117,11 +117,13 @@ public class LetterLayers : MonoBehaviour {
             sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
             submit.AddInteractionPunch();
             Debug.LogFormat("[Letter Layers #{0}] You submitted {1}.", moduleId, answerText.text);
-            List<string> answer = answerText.text.Split(' ').ToList();
-            List<string> expectedAnswer = question.ToList();
-            answer.Sort();
-            expectedAnswer.Sort();
-            if (answer.SequenceEqual(expectedAnswer))
+            string[] answer = answerText.text.Split(' ');
+            var q = from a in answer
+                    join b in question on a equals b
+                    select a;
+
+            bool equals = answer.Length == question.Length && q.Count() == answer.Length;
+            if (equals)
             {
                 LEDs[stage].material = usefulMats[1];
                 stage++;
