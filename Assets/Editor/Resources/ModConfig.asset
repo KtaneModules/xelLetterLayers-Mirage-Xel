@@ -14,7 +14,7 @@ MonoBehaviour:
   id: xelLetterLayers
   title: Letter Layers
   author: PANOPTES, DragonManiac
-  description: 'You want to stack them together? They don''t look so good.
+  description: 'You want to stack these together? They don''t look so good.
 
 
     Letter Layers regular module by PANOPTES. Manual/idea by DragonManiac.
@@ -26,6 +26,6 @@ MonoBehaviour:
     Unfortunately not TP supported, as I''m not sure how I want it to work.
 
 '
-  version: Beta
+  version: 1.1
   outputFolder: build
   previewImage: {fileID: 2800000, guid: c4048d44b25b33d48935fa4e387af95f, type: 3}

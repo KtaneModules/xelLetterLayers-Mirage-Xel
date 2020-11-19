@@ -27,6 +27,7 @@ public class LetterLayers : MonoBehaviour {
     new string[]{"ァ","イ","ウ","エ","オ","カ","ガ","キ","ギ","ク","グ","ケ","ゲ","コ","ゴ","サ","ザ","シ","ジ","ス","ズ","セ","ゼ","ソ","ゾ","タ","ダ","チ","ヂ","ツ","ヅ","テ","デ","ト","ド","ナ","ニ","ヌ","ネ","ノ","ハ","バ","パ","ヒ","ビ","ピ","フ","ブ","プ","ヘ","ベ","ペ","ホ","ボ","ポ","マ","ミ","ム","メ","モ","ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ","ヰ","ヱ","ヲ","ン","ヴ","ヷ","ヸ","ヹ","ヺ"},
     new string[]{"あ","い","う","え","お","か","が","き","ぎ","く","ぐ","け","げ","こ","ご","さ","ざ","し","じ","す","ず","せ","ぜ","そ","ぞ","た","だ","ち","ぢ","つ","づ","て","で","と","ど","な","に","ぬ","ね","の","は","ば","ぱ","ひ","び","ぴ","ふ","ぶ","ぷ","へ","べ","ぺ","ほ","ぼ","ぽ","ま","み","む","め","も","や","ゆ","よ","ら","り","る","れ","ろ","わ","ゐ","ゑ","を","ん","ゔ"}};
     string[] question = new string[3];
+    int[] rotations = new int[3];
     int[] displayIndices = new int[2];
     int stage;
     public KMBombModule module;
@@ -54,13 +55,18 @@ public class LetterLayers : MonoBehaviour {
         for (int i = 0; i < 3; i++)
         {
             questionTexts[i].text = question[i];
-            questionTexts[i].transform.localEulerAngles = new Vector3(90, 0, rnd.Range(0, 360));
+            questionTexts[i].transform.localEulerAngles = new Vector3(90, 0, rotations[i] * 5);
         }
         Debug.LogFormat("[Letter Layers #{0}] The chosen letters for stage {1} are {2}.", moduleId, stage + 1, question.Join(" ,"));
     }
     void PickLetters()
     {
         for (int i = 0; i < 3; i++) { question[i] = allCharacters[rnd.Range(0, allCharacters.Length)].ToString(); }
+        if (rotations[0] == rotations[1] || rotations[1] == rotations[2] || rotations[0] == rotations[2]) { PickRotations(); }
+    }
+    void PickRotations()
+    {
+        for (int i = 0; i < 3; i++) { rotations[i] = rnd.Range(0, 72); }
         if (question[0].Equals(question[1]) || question[1].Equals(question[2]) || question[0].Equals(question[2])) { PickLetters(); }
     }
     void PressArrow(bool arrow, int index)
@@ -74,7 +80,7 @@ public class LetterLayers : MonoBehaviour {
                     {
                         upArrows[index].AddInteractionPunch();
                         displayIndices[0]++;
-                        if (displayIndices[0] == 7) { displayIndices[0] = 0; }
+                        if (displayIndices[0] == languages.Length) { displayIndices[0] = 0; }
                     }
                     else
                     {
