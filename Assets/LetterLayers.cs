@@ -21,7 +21,7 @@ public class LetterLayers : MonoBehaviour {
     string[][] languageArrays = new string[][]{
     new string[]{"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"},
     new string[]{"α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","µ","ν","ξ","ο","π","ρ","σ","τ","υ","φ","χ","ψ","ω"},
-    new string[]{"ㄱ","ㄲ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ","ㅏ","ㅐㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢㅣ"},
+    new string[]{"ㄱ","ㄲ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ","ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"},
     new string[]{"а","б","в","г","д","е","ё","ж","з","и","й","к","л","м","н","о","п","р","с","т","у","ф","х","ц","ч","ш","щ","ъ","ы","ь","э","ю","я"},
     new string[]{"ก","ข","ฃ","ค","ฅ","ง","จ","ฉ","ช","ซ","ฌ","ญ","ฎ","ฏ","ฐ","ฑ","ฒ","ณ","ด","ต","ถ","ท","ธ","น","บ","ป","ผ","ฝ","พ","ฟ","ภ","ม","ย","ร","ล","ว","ศ","ษ","ส","ห","ฬ","ฃ","ฮ"},
     new string[]{"ァ","イ","ウ","エ","オ","カ","ガ","キ","ギ","ク","グ","ケ","ゲ","コ","ゴ","サ","ザ","シ","ジ","ス","ズ","セ","ゼ","ソ","ゾ","タ","ダ","チ","ヂ","ツ","ヅ","テ","デ","ト","ド","ナ","ニ","ヌ","ネ","ノ","ハ","バ","パ","ヒ","ビ","ピ","フ","ブ","プ","ヘ","ベ","ペ","ホ","ボ","ポ","マ","ミ","ム","メ","モ","ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ","ヰ","ヱ","ヲ","ン","ヴ","ヷ","ヸ","ヹ","ヺ"},
@@ -52,6 +52,7 @@ public class LetterLayers : MonoBehaviour {
     }
     void GenerateStage() {
         PickLetters();
+        PickRotations();
         for (int i = 0; i < 3; i++)
         {
             questionTexts[i].text = question[i];
@@ -62,12 +63,12 @@ public class LetterLayers : MonoBehaviour {
     void PickLetters()
     {
         for (int i = 0; i < 3; i++) { question[i] = allCharacters[rnd.Range(0, allCharacters.Length)].ToString(); }
-        if (rotations[0] == rotations[1] || rotations[1] == rotations[2] || rotations[0] == rotations[2]) { PickRotations(); }
+        if (question[0].Equals(question[1]) || question[1].Equals(question[2]) || question[0].Equals(question[2])) { PickLetters(); }
     }
     void PickRotations()
     {
         for (int i = 0; i < 3; i++) { rotations[i] = rnd.Range(0, 72); }
-        if (question[0].Equals(question[1]) || question[1].Equals(question[2]) || question[0].Equals(question[2])) { PickLetters(); }
+        if (rotations[0] == rotations[1] || rotations[1] == rotations[2] || rotations[0] == rotations[2]) { PickRotations(); }
     }
     void PressArrow(bool arrow, int index)
     {
@@ -118,11 +119,7 @@ public class LetterLayers : MonoBehaviour {
             submit.AddInteractionPunch();
             Debug.LogFormat("[Letter Layers #{0}] You submitted {1}.", moduleId, answerText.text);
             string[] answer = answerText.text.Split(' ');
-            var q = from a in answer
-                    join b in question on a equals b
-                    select a;
-
-            bool equals = answer.Length == question.Length && q.Count() == answer.Length;
+            bool equals = question.Intersect(answer).Count() == question.Union(answer).Count();
             if (equals)
             {
                 LEDs[stage].material = usefulMats[1];
