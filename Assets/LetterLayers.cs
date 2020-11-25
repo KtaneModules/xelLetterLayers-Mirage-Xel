@@ -44,7 +44,7 @@ public class LetterLayers : MonoBehaviour {
             upArrows[i].OnInteract += delegate { PressArrow(true, j); return false; };
             downArrows[i].OnInteract += delegate { PressArrow(false, j); return false; };
         }
-        deliver.OnInteract += delegate { deliver.AddInteractionPunch(); sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.BigButtonPress, transform); if (!solved && answerText.text.Length < 6) answerText.text += (displayTexts[1].text + " "); if (answerText.text.Length == 6) answerText.text.Remove(5); return false; };
+        deliver.OnInteract += delegate { deliver.AddInteractionPunch(); sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.BigButtonPress, transform); if (!solved && answerText.text.Length < 3) answerText.text += (displayTexts[1].text); return false; };
         submit.OnHighlight += delegate { sumbitHL.material = usefulMats[3]; };
         submit.OnHighlightEnded += delegate { sumbitHL.material = usefulMats[0]; };
         submit.OnInteract += delegate { PressSubmit(); return false; };
@@ -118,8 +118,12 @@ public class LetterLayers : MonoBehaviour {
             sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
             submit.AddInteractionPunch();
             Debug.LogFormat("[Letter Layers #{0}] You submitted {1}.", moduleId, answerText.text);
-            string[] answer = answerText.text.Split(' ');
-            bool equals = question.Intersect(answer).Count() == question.Union(answer).Count();
+            char[] proccesing = answerText.text.ToCharArray();
+            string[] answer = new string[3];
+            for (int i = 0; i < 3; i++) answer[i] = proccesing[i].ToString();
+            bool equals = false;
+            foreach (string i in answer) if (question.Contains(i)) equals = true;
+            foreach (string i in question) if (answer.Contains(i)) equals = true;
             if (equals)
             {
                 LEDs[stage].material = usefulMats[1];

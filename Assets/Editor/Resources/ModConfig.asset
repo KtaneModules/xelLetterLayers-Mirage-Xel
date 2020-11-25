@@ -26,6 +26,6 @@ MonoBehaviour:
     Unfortunately not TP supported, as I''m not sure how I want it to work.
 
 '
-  version: 1.2
+  version: 1.2.1
   outputFolder: build
   previewImage: {fileID: 2800000, guid: c4048d44b25b33d48935fa4e387af95f, type: 3}
