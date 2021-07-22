@@ -273,7 +273,6 @@ public class LetterLayers : MonoBehaviour
                 {
                     int ct1 = 0, ct2 = 0;
                     int curIndex = displayIndices[0], curIndex2 = displayIndices[0];
-                    int target;
                     while (!languageArrays[curIndex].Contains(parameters[1][0].ToString()) && !languageArrays[curIndex].Contains(parameters[1][1].ToString()) && !languageArrays[curIndex].Contains(parameters[1][2].ToString()))
                     {
                         ct1++;
@@ -290,65 +289,189 @@ public class LetterLayers : MonoBehaviour
                     }
                     if (ct1 < ct2)
                     {
-                        if (languageArrays[curIndex].Contains(parameters[1][0].ToString()))
-                        {
-                            target = Array.IndexOf(languageArrays[curIndex], parameters[1][0].ToString());
-                            parameters[1] = parameters[1].Replace(parameters[1][0], ' ');
-                        }
-                        else if (languageArrays[curIndex].Contains(parameters[1][1].ToString()))
-                        {
-                            target = Array.IndexOf(languageArrays[curIndex], parameters[1][1].ToString());
-                            parameters[1] = parameters[1].Replace(parameters[1][1], ' ');
-                        }
-                        else
-                        {
-                            target = Array.IndexOf(languageArrays[curIndex], parameters[1][2].ToString());
-                            parameters[1] = parameters[1].Replace(parameters[1][2], ' ');
-                        }
                         for (int j = 0; j < ct1; j++)
                         {
                             upArrows[0].OnInteract();
                             yield return new WaitForSeconds(0.1f);
                         }
-                    }
-                    else
-                    {
-                        if (languageArrays[curIndex2].Contains(parameters[1][0].ToString()))
+                        int ct3 = 0, ct4 = 0;
+                        int curIndex3 = displayIndices[1], curIndex4 = displayIndices[1];
+                        while (!languageArrays[curIndex][curIndex3].Equals(parameters[1][0].ToString()) && !languageArrays[curIndex][curIndex3].Equals(parameters[1][1].ToString()) && !languageArrays[curIndex][curIndex3].Equals(parameters[1][2].ToString()))
                         {
-                            target = Array.IndexOf(languageArrays[curIndex2], parameters[1][0].ToString());
-                            parameters[1] = parameters[1].Replace(parameters[1][0], ' ');
+                            ct3++;
+                            curIndex3++;
+                            if (curIndex3 > languageArrays[curIndex].Length - 1)
+                                curIndex3 = 0;
                         }
-                        else if (languageArrays[curIndex2].Contains(parameters[1][1].ToString()))
+                        while (!languageArrays[curIndex][curIndex4].Equals(parameters[1][0].ToString()) && !languageArrays[curIndex][curIndex4].Equals(parameters[1][1].ToString()) && !languageArrays[curIndex][curIndex4].Equals(parameters[1][2].ToString()))
                         {
-                            target = Array.IndexOf(languageArrays[curIndex2], parameters[1][1].ToString());
-                            parameters[1] = parameters[1].Replace(parameters[1][1], ' ');
+                            ct4++;
+                            curIndex4--;
+                            if (curIndex4 < 0)
+                                curIndex4 = languageArrays[curIndex].Length - 1;
+                        }
+                        if (ct3 < ct4)
+                        {
+                            for (int j = 0; j < ct3; j++)
+                            {
+                                upArrows[1].OnInteract();
+                                yield return new WaitForSeconds(0.1f);
+                            }
+                            if (languageArrays[curIndex][curIndex3].Equals(parameters[1][0].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(0, 1);
+                                parameters[1] = parameters[1].Insert(0, " ");
+                            }
+                            else if (languageArrays[curIndex][curIndex3].Equals(parameters[1][1].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(1, 1);
+                                parameters[1] = parameters[1].Insert(1, " ");
+                            }
+                            else
+                            {
+                                parameters[1] = parameters[1].Remove(2, 1);
+                                parameters[1] = parameters[1].Insert(2, " ");
+                            }
+                        }
+                        else if (ct3 > ct4)
+                        {
+                            for (int j = 0; j < ct4; j++)
+                            {
+                                downArrows[1].OnInteract();
+                                yield return new WaitForSeconds(0.1f);
+                            }
+                            if (languageArrays[curIndex][curIndex4].Equals(parameters[1][0].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(0, 1);
+                                parameters[1] = parameters[1].Insert(0, " ");
+                            }
+                            else if (languageArrays[curIndex][curIndex4].Equals(parameters[1][1].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(1, 1);
+                                parameters[1] = parameters[1].Insert(1, " ");
+                            }
+                            else
+                            {
+                                parameters[1] = parameters[1].Remove(2, 1);
+                                parameters[1] = parameters[1].Insert(2, " ");
+                            }
                         }
                         else
                         {
-                            target = Array.IndexOf(languageArrays[curIndex2], parameters[1][2].ToString());
-                            parameters[1] = parameters[1].Replace(parameters[1][2], ' ');
+                            for (int j = 0; j < ct3; j++)
+                            {
+                                downArrows[1].OnInteract();
+                                yield return new WaitForSeconds(0.1f);
+                            }
+                            if (languageArrays[curIndex][curIndex3].Equals(parameters[1][0].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(0, 1);
+                                parameters[1] = parameters[1].Insert(0, " ");
+                            }
+                            else if (languageArrays[curIndex][curIndex3].Equals(parameters[1][1].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(1, 1);
+                                parameters[1] = parameters[1].Insert(1, " ");
+                            }
+                            else
+                            {
+                                parameters[1] = parameters[1].Remove(2, 1);
+                                parameters[1] = parameters[1].Insert(2, " ");
+                            }
                         }
+                    }
+                    else
+                    {
                         for (int j = 0; j < ct2; j++)
                         {
                             downArrows[0].OnInteract();
                             yield return new WaitForSeconds(0.1f);
                         }
-                    }
-                    int diff = target - displayIndices[1];
-                    if (Math.Abs(diff) > ((ct1 < ct2) ? languageArrays[curIndex].Length : languageArrays[curIndex2].Length) / 2)
-                    {
-                        diff = Math.Abs(diff) - ((ct1 < ct2) ? languageArrays[curIndex].Length : languageArrays[curIndex2].Length);
-
-                        if (target < displayIndices[1])
-                            diff = -diff;
-                    }
-                    for (int j = 0; j < Math.Abs(diff); j++)
-                    {
-                        if (diff > 0)
-                            upArrows[1].OnInteract();
+                        int ct3 = 0, ct4 = 0;
+                        int curIndex3 = displayIndices[1], curIndex4 = displayIndices[1];
+                        while (!languageArrays[curIndex2][curIndex3].Equals(parameters[1][0].ToString()) && !languageArrays[curIndex2][curIndex3].Equals(parameters[1][1].ToString()) && !languageArrays[curIndex2][curIndex3].Equals(parameters[1][2].ToString()))
+                        {
+                            ct3++;
+                            curIndex3++;
+                            if (curIndex3 > languageArrays[curIndex2].Length - 1)
+                                curIndex3 = 0;
+                        }
+                        while (!languageArrays[curIndex2][curIndex4].Equals(parameters[1][0].ToString()) && !languageArrays[curIndex2][curIndex4].Equals(parameters[1][1].ToString()) && !languageArrays[curIndex2][curIndex4].Equals(parameters[1][2].ToString()))
+                        {
+                            ct4++;
+                            curIndex4--;
+                            if (curIndex4 < 0)
+                                curIndex4 = languageArrays[curIndex2].Length - 1;
+                        }
+                        if (ct3 < ct4)
+                        {
+                            for (int j = 0; j < ct3; j++)
+                            {
+                                upArrows[1].OnInteract();
+                                yield return new WaitForSeconds(0.1f);
+                            }
+                            if (languageArrays[curIndex2][curIndex3].Equals(parameters[1][0].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(0, 1);
+                                parameters[1] = parameters[1].Insert(0, " ");
+                            }
+                            else if (languageArrays[curIndex2][curIndex3].Equals(parameters[1][1].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(1, 1);
+                                parameters[1] = parameters[1].Insert(1, " ");
+                            }
+                            else
+                            {
+                                parameters[1] = parameters[1].Remove(2, 1);
+                                parameters[1] = parameters[1].Insert(2, " ");
+                            }
+                        }
+                        else if (ct3 > ct4)
+                        {
+                            for (int j = 0; j < ct4; j++)
+                            {
+                                downArrows[1].OnInteract();
+                                yield return new WaitForSeconds(0.1f);
+                            }
+                            if (languageArrays[curIndex2][curIndex4].Equals(parameters[1][0].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(0, 1);
+                                parameters[1] = parameters[1].Insert(0, " ");
+                            }
+                            else if (languageArrays[curIndex2][curIndex4].Equals(parameters[1][1].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(1, 1);
+                                parameters[1] = parameters[1].Insert(1, " ");
+                            }
+                            else
+                            {
+                                parameters[1] = parameters[1].Remove(2, 1);
+                                parameters[1] = parameters[1].Insert(2, " ");
+                            }
+                        }
                         else
-                            downArrows[1].OnInteract();
-                        yield return new WaitForSeconds(0.1f);
+                        {
+                            for (int j = 0; j < ct3; j++)
+                            {
+                                downArrows[1].OnInteract();
+                                yield return new WaitForSeconds(0.1f);
+                            }
+                            if (languageArrays[curIndex2][curIndex3].Equals(parameters[1][0].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(0, 1);
+                                parameters[1] = parameters[1].Insert(0, " ");
+                            }
+                            else if (languageArrays[curIndex2][curIndex3].Equals(parameters[1][1].ToString()))
+                            {
+                                parameters[1] = parameters[1].Remove(1, 1);
+                                parameters[1] = parameters[1].Insert(1, " ");
+                            }
+                            else
+                            {
+                                parameters[1] = parameters[1].Remove(2, 1);
+                                parameters[1] = parameters[1].Insert(2, " ");
+                            }
+                        }
                     }
                     deliver.OnInteract();
                     yield return new WaitForSeconds(0.1f);
