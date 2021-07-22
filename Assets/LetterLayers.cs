@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
-using KModkit;
 using rnd = UnityEngine.Random;
-public class LetterLayers : MonoBehaviour {
+public class LetterLayers : MonoBehaviour
+{
     public KMSelectable[] upArrows;
     public KMSelectable[] downArrows;
     public KMSelectable deliver;
@@ -14,29 +15,33 @@ public class LetterLayers : MonoBehaviour {
     public TextMesh[] questionTexts;
     public TextMesh answerText;
     public MeshRenderer[] LEDs;
-    public MeshRenderer sumbitHL;
+    public MeshRenderer submitHL;
     public Material[] usefulMats;
     string[] languages = new string[] { "E", "Gr", "K", "R", "T", "JK", "JH" };
-    string allCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZαβγδεζηθικλµνξοπρστυφχψωㄱㄲㄴㄷㄹㅁㅂㅅㅆㅇㅈㅊㅋㅌㅍㅎㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣабвгдеёжзийклмнопрстуфхцчшщъыьэюяกขฃคฅงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬฃฮァイウエオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤユヨラリルレロワヰヱヲンヴヷヸヹヺあいうえおかがきぎくぐけげこごさざしじすずせぜそぞただちぢつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもやゆよらりるれろわゐゑをんゔ";
+    string allCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZαβγδεζηθιλµξπρστφψωㄱㄲㄷㄹㅁㅂㅅㅆㅈㅊㅋㅌㅍㅎㅏㅐㅑㅒㅔㅖㅗㅘㅙㅚㅛㅝㅞㅟㅡㅢабгдеёжзийклпруфцчшщъыьэюяกขฃคฅงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬฃฮァイウエオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤユヨラリルレロワヰヱヲンヴヷヸヹヺあいうえおかがきぎくぐけげこごさざしじすずせぜそぞただちぢつづてでとどなにぬねのはばぱひびぴふぶぷほぼぽまみむめもやゆよらりるれろわゐゑをんゔ";
     string[][] languageArrays = new string[][]{
     new string[]{"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"},
-    new string[]{"α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","µ","ν","ξ","ο","π","ρ","σ","τ","υ","φ","χ","ψ","ω"},
-    new string[]{"ㄱ","ㄲ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅆ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ","ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"},
-    new string[]{"а","б","в","г","д","е","ё","ж","з","и","й","к","л","м","н","о","п","р","с","т","у","ф","х","ц","ч","ш","щ","ъ","ы","ь","э","ю","я"},
+    new string[]{"α","β","γ","δ","ε","ζ","η","θ","ι","λ","µ","ξ","π","ρ","σ","τ","φ","ψ","ω"},
+    new string[]{"ㄱ","ㄲ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅆ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ","ㅏ","ㅐ","ㅑ","ㅒ","ㅔ","ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ","ㅝ","ㅞ","ㅟ","ㅡ","ㅢ"},
+    new string[]{"а","б","г","д","е","ё","ж","з","и","й","к","л","п","р","у","ф","ц","ч","ш","щ","ъ","ы","ь","э","ю","я"},
     new string[]{"ก","ข","ฃ","ค","ฅ","ง","จ","ฉ","ช","ซ","ฌ","ญ","ฎ","ฏ","ฐ","ฑ","ฒ","ณ","ด","ต","ถ","ท","ธ","น","บ","ป","ผ","ฝ","พ","ฟ","ภ","ม","ย","ร","ล","ว","ศ","ษ","ส","ห","ฬ","ฃ","ฮ"},
     new string[]{"ァ","イ","ウ","エ","オ","カ","ガ","キ","ギ","ク","グ","ケ","ゲ","コ","ゴ","サ","ザ","シ","ジ","ス","ズ","セ","ゼ","ソ","ゾ","タ","ダ","チ","ヂ","ツ","ヅ","テ","デ","ト","ド","ナ","ニ","ヌ","ネ","ノ","ハ","バ","パ","ヒ","ビ","ピ","フ","ブ","プ","ヘ","ベ","ペ","ホ","ボ","ポ","マ","ミ","ム","メ","モ","ヤ","ユ","ヨ","ラ","リ","ル","レ","ロ","ワ","ヰ","ヱ","ヲ","ン","ヴ","ヷ","ヸ","ヹ","ヺ"},
-    new string[]{"あ","い","う","え","お","か","が","き","ぎ","く","ぐ","け","げ","こ","ご","さ","ざ","し","じ","す","ず","せ","ぜ","そ","ぞ","た","だ","ち","ぢ","つ","づ","て","で","と","ど","な","に","ぬ","ね","の","は","ば","ぱ","ひ","び","ぴ","ふ","ぶ","ぷ","へ","べ","ぺ","ほ","ぼ","ぽ","ま","み","む","め","も","や","ゆ","よ","ら","り","る","れ","ろ","わ","ゐ","ゑ","を","ん","ゔ"}};
+    new string[]{"あ","い","う","え","お","か","が","き","ぎ","く","ぐ","け","げ","こ","ご","さ","ざ","し","じ","す","ず","せ","ぜ","そ","ぞ","た","だ","ち","ぢ","つ","づ","て","で","と","ど","な","に","ぬ","ね","の","は","ば","ぱ","ひ","び","ぴ","ふ","ぶ","ぷ","ほ","ぼ","ぽ","ま","み","む","め","も","や","ゆ","よ","ら","り","る","れ","ろ","わ","ゐ","ゑ","を","ん","ゔ"}};
     string[] question = new string[3];
-    int[] rotations = new int[3];
+    List<float> rotationChoices = new List<float> { 0.4f, 0.7f, 1f };
+    int[] rotationDirs = new int[3];
     int[] displayIndices = new int[2];
     int stage;
+    bool striking;
+    bool activated;
     public KMBombModule module;
     public KMAudio sound;
     int moduleId;
     static int moduleIdCounter = 1;
     bool solved;
 
-    void Awake() {
+    void Awake()
+    {
         moduleId = moduleIdCounter++;
         for (int i = 0; i < 2; i++)
         {
@@ -44,21 +49,25 @@ public class LetterLayers : MonoBehaviour {
             upArrows[i].OnInteract += delegate { PressArrow(true, j); return false; };
             downArrows[i].OnInteract += delegate { PressArrow(false, j); return false; };
         }
-        deliver.OnInteract += delegate { deliver.AddInteractionPunch(); sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.BigButtonPress, transform); if (!solved && answerText.text.Length < 3) answerText.text += (displayTexts[1].text); return false; };
-        submit.OnHighlight += delegate { sumbitHL.material = usefulMats[3]; };
-        submit.OnHighlightEnded += delegate { sumbitHL.material = usefulMats[0]; };
+        for (int i = 0; i < 3; i++)
+            questionTexts[i].text = "";
+        deliver.OnInteract += delegate { deliver.AddInteractionPunch(); sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.BigButtonPress, deliver.transform); if (!solved && !striking && activated && answerText.text.Length < 3) answerText.text += (displayTexts[1].text); return false; };
+        submit.OnHighlight += delegate { submitHL.material = usefulMats[3]; };
+        submit.OnHighlightEnded += delegate { submitHL.material = usefulMats[0]; };
         submit.OnInteract += delegate { PressSubmit(); return false; };
-        module.OnActivate += delegate { GenerateStage(); };
+        module.OnActivate += delegate { GenerateStage(); activated = true; };
     }
-    void GenerateStage() {
+    void GenerateStage()
+    {
+        StopAllCoroutines();
         PickLetters();
         PickRotations();
         for (int i = 0; i < 3; i++)
         {
             questionTexts[i].text = question[i];
-            questionTexts[i].transform.localEulerAngles = new Vector3(90, 0, rotations[i] * 5);
+            StartCoroutine(RotateLetter(i));
         }
-        Debug.LogFormat("[Letter Layers #{0}] The chosen letters for stage {1} are {2}.", moduleId, stage + 1, question.Join(" ,"));
+        Debug.LogFormat("[Letter Layers #{0}] The chosen letters for stage {1} are {2}.", moduleId, stage + 1, question.Join(", "));
     }
     void PickLetters()
     {
@@ -67,15 +76,19 @@ public class LetterLayers : MonoBehaviour {
     }
     void PickRotations()
     {
-        for (int i = 0; i < 3; i++) { rotations[i] = rnd.Range(0, 72); }
-        if (rotations[0] == rotations[1] || rotations[1] == rotations[2] || rotations[0] == rotations[2]) { PickRotations(); }
+        rotationChoices = rotationChoices.Shuffle();
+        for (int i = 0; i < 3; i++) { rotationDirs[i] = rnd.Range(0, 2); }
     }
     void PressArrow(bool arrow, int index)
     {
-        if (!solved)
+        if (!solved && !striking && activated)
         {
-            sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
-            switch (index) {
+            if (arrow)
+                sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, upArrows[index].transform);
+            else
+                sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, downArrows[index].transform);
+            switch (index)
+            {
                 case 0:
                     if (arrow)
                     {
@@ -104,7 +117,7 @@ public class LetterLayers : MonoBehaviour {
                     {
                         downArrows[index].AddInteractionPunch();
                         displayIndices[1]--;
-                        if (displayIndices[1] == -1) { displayIndices[1] = languageArrays[displayIndices[0]].Length -1; }
+                        if (displayIndices[1] == -1) { displayIndices[1] = languageArrays[displayIndices[0]].Length - 1; }
                     }
                     break;
             }
@@ -113,18 +126,27 @@ public class LetterLayers : MonoBehaviour {
     }
     void PressSubmit()
     {
-        if (!solved)
+        if (!solved && !striking && activated)
         {
-            sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
+            sound.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, submit.transform);
             submit.AddInteractionPunch();
-            Debug.LogFormat("[Letter Layers #{0}] You submitted {1}.", moduleId, answerText.text);
-            char[] proccesing = answerText.text.ToCharArray();
+            Debug.LogFormat("[Letter Layers #{0}] You submitted {1}.", moduleId, answerText.text.Equals("") ? "nothing" : answerText.text);
+            char[] processing = answerText.text.ToCharArray();
             string[] answer = new string[3];
-            for (int i = 0; i < 3; i++) answer[i] = proccesing[i].ToString();
-            bool equals = false;
-            foreach (string i in answer) if (question.Contains(i)) equals = true;
-            foreach (string i in question) if (answer.Contains(i)) equals = true;
-            if (equals)
+            for (int i = 0; i < processing.Length; i++) answer[i] = processing[i].ToString();
+            bool[] equals = new bool[3];
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (question[i].Equals(answer[j]))
+                    {
+                        equals[i] = true;
+                        break;
+                    }
+                }
+            }
+            if (!equals.Contains(false))
             {
                 LEDs[stage].material = usefulMats[1];
                 stage++;
@@ -152,6 +174,7 @@ public class LetterLayers : MonoBehaviour {
     }
     IEnumerator StrikeFlash()
     {
+        striking = true;
         int count = 0;
         while (count < 3)
         {
@@ -163,6 +186,7 @@ public class LetterLayers : MonoBehaviour {
         }
         Debug.LogFormat("[Letter Layers #{0}] That was incorrect. Strike!", moduleId);
         GenerateStage();
+        striking = false;
         yield break;
     }
     IEnumerator SolveFlash()
@@ -174,7 +198,7 @@ public class LetterLayers : MonoBehaviour {
             foreach (MeshRenderer i in LEDs)
             {
                 i.material = usefulMats[1];
-            } 
+            }
             yield return new WaitForSeconds(0.6f);
             foreach (MeshRenderer i in LEDs)
             {
@@ -191,6 +215,158 @@ public class LetterLayers : MonoBehaviour {
         {
             i.text = "";
         }
+        StopAllCoroutines();
         yield break;
+    }
+    IEnumerator RotateLetter(int index)
+    {
+        while (true)
+        {
+            float t = 0f;
+            int rotation = 0;
+            while (rotation != 90)
+            {
+                while (t < 0.006f)
+                {
+                    yield return null;
+                    t += Time.deltaTime;
+                }
+                t = 0f;
+                if (rotationDirs[index] == 1)
+                    questionTexts[index].transform.Rotate(0.0f, 0.0f, rotationChoices[index], Space.Self);
+                else
+                    questionTexts[index].transform.Rotate(0.0f, 0.0f, -rotationChoices[index], Space.Self);
+                rotation++;
+            }
+        }
+    }
+    //twitch plays
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} submit δヨぎ [Submits the three specified letters]";
+    #pragma warning restore 414
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        string[] parameters = command.Split(' ');
+        if (Regex.IsMatch(parameters[0], @"^\s*submit\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            if (parameters.Length > 2)
+            {
+                yield return "sendtochaterror Too many parameters!";
+            }
+            else if (parameters.Length == 2)
+            {
+                if (parameters[1].Length != 3)
+                {
+                    yield return "sendtochaterror Please include only three letters to submit!";
+                    yield break;
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    if (!allCharacters.Contains(parameters[1][i]))
+                    {
+                        yield return "sendtochaterror!f The specified letter '" + parameters[1][i] + "' is invalid!";
+                        yield break;
+                    }
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    int ct1 = 0, ct2 = 0;
+                    int curIndex = displayIndices[0], curIndex2 = displayIndices[0];
+                    int target;
+                    while (!languageArrays[curIndex].Contains(parameters[1][0].ToString()) && !languageArrays[curIndex].Contains(parameters[1][1].ToString()) && !languageArrays[curIndex].Contains(parameters[1][2].ToString()))
+                    {
+                        ct1++;
+                        curIndex++;
+                        if (curIndex > 6)
+                            curIndex = 0;
+                    }
+                    while (!languageArrays[curIndex2].Contains(parameters[1][0].ToString()) && !languageArrays[curIndex2].Contains(parameters[1][1].ToString()) && !languageArrays[curIndex2].Contains(parameters[1][2].ToString()))
+                    {
+                        ct2++;
+                        curIndex2--;
+                        if (curIndex2 < 0)
+                            curIndex2 = 6;
+                    }
+                    if (ct1 < ct2)
+                    {
+                        if (languageArrays[curIndex].Contains(parameters[1][0].ToString()))
+                        {
+                            target = Array.IndexOf(languageArrays[curIndex], parameters[1][0].ToString());
+                            parameters[1] = parameters[1].Replace(parameters[1][0], ' ');
+                        }
+                        else if (languageArrays[curIndex].Contains(parameters[1][1].ToString()))
+                        {
+                            target = Array.IndexOf(languageArrays[curIndex], parameters[1][1].ToString());
+                            parameters[1] = parameters[1].Replace(parameters[1][1], ' ');
+                        }
+                        else
+                        {
+                            target = Array.IndexOf(languageArrays[curIndex], parameters[1][2].ToString());
+                            parameters[1] = parameters[1].Replace(parameters[1][2], ' ');
+                        }
+                        for (int j = 0; j < ct1; j++)
+                        {
+                            upArrows[0].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                    else
+                    {
+                        if (languageArrays[curIndex2].Contains(parameters[1][0].ToString()))
+                        {
+                            target = Array.IndexOf(languageArrays[curIndex2], parameters[1][0].ToString());
+                            parameters[1] = parameters[1].Replace(parameters[1][0], ' ');
+                        }
+                        else if (languageArrays[curIndex2].Contains(parameters[1][1].ToString()))
+                        {
+                            target = Array.IndexOf(languageArrays[curIndex2], parameters[1][1].ToString());
+                            parameters[1] = parameters[1].Replace(parameters[1][1], ' ');
+                        }
+                        else
+                        {
+                            target = Array.IndexOf(languageArrays[curIndex2], parameters[1][2].ToString());
+                            parameters[1] = parameters[1].Replace(parameters[1][2], ' ');
+                        }
+                        for (int j = 0; j < ct2; j++)
+                        {
+                            downArrows[0].OnInteract();
+                            yield return new WaitForSeconds(0.1f);
+                        }
+                    }
+                    int diff = target - displayIndices[1];
+                    if (Math.Abs(diff) > ((ct1 < ct2) ? languageArrays[curIndex].Length : languageArrays[curIndex2].Length) / 2)
+                    {
+                        diff = Math.Abs(diff) - ((ct1 < ct2) ? languageArrays[curIndex].Length : languageArrays[curIndex2].Length);
+
+                        if (target < displayIndices[1])
+                            diff = -diff;
+                    }
+                    for (int j = 0; j < Math.Abs(diff); j++)
+                    {
+                        if (diff > 0)
+                            upArrows[1].OnInteract();
+                        else
+                            downArrows[1].OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                    deliver.OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                submit.OnInteract();
+            }
+            else if (parameters.Length == 1)
+            {
+                yield return "sendtochaterror Please specify the three letters you wish to submit!";
+            }
+            yield break;
+        }
+    }
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        while (!activated || striking) yield return true;
+        int start = stage;
+        for (int i = start; i < 3; i++)
+            yield return ProcessTwitchCommand("submit " + question.Join(""));
     }
 }
